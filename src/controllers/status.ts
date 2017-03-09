@@ -176,6 +176,9 @@ export class StatusController {
                     this.$timeout.cancel(this.reconnectTimeout);
                     reconnectionFailed();
                 },
+                (progress: threema.ConnectionBuildupState) => {
+                    this.$log.warn('UPDATE:', progress);
+                },
             );
         };
 

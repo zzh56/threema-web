@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Threema Web. If not, see <http://www.gnu.org/licenses/>.
  */
+import {AsyncEvent} from 'ts-events';
+import {threema} from '../threema';
 
 export class StateService implements threema.StateService {
 
@@ -22,6 +24,9 @@ export class StateService implements threema.StateService {
     // Angular services
     private $log: ng.ILogService;
     private $interval: ng.IIntervalService;
+
+    // Events
+    public eventStateChange = new AsyncEvent<threema.ConnectionBuildupState>();
 
     // WebRTC states
     public signalingConnectionState: saltyrtc.SignalingState;

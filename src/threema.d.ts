@@ -15,8 +15,6 @@
  * along with Threema Web. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Types used for the Threema Webclient.
-
 declare const angular: ng.IAngularStatic;
 
 declare namespace threema {
@@ -317,6 +315,9 @@ declare namespace threema {
      * State service.
      */
     interface StateService {
+        // Events
+        eventStateChange: AsyncEvent<ConnectionBuildupState>;
+
         // WebRTC states
         signalingConnectionState: saltyrtc.SignalingState;
         rtcConnectionState: RTCConnectionState;
