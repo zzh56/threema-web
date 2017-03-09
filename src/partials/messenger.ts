@@ -18,7 +18,17 @@
 import {ContactControllerModel} from '../controller_model/contact';
 import {supportsPassive, throttle} from '../helpers';
 import {ExecuteService} from '../services/execute';
+import {StateService} from '../services/state';
 import {ControllerModelMode} from '../types/enums';
+import {SettingsService} from "../services/settings";
+import {WebClientService} from "../services/webclient";
+import {ReceiverService} from "../services/receiver";
+import {TrustedKeyStoreService} from "../services/keystore";
+import {ControllerService} from "../services/controller";
+import {FingerPrintService} from "../services/fingerprint";
+import {ContactService} from "../services/contact";
+import {ControllerModelService} from "../services/controller_model";
+import {MimeService} from "../services/mime";
 
 abstract class DialogController {
     public static $inject = ['$mdDialog'];
@@ -88,12 +98,12 @@ class SettingsController {
 
     public $mdDialog: ng.material.IDialogService;
     public $window: ng.IWindowService;
-    public settingsService: threema.SettingsService;
+    public settingsService: SettingsService;
     public activeElement: HTMLElement | null;
 
     constructor($mdDialog: ng.material.IDialogService,
                 $window: ng.IWindowService,
-                settingsService: threema.SettingsService) {
+                settingsService: SettingsService) {
         this.$mdDialog = $mdDialog;
         this.$window = $window;
         this.settingsService = settingsService;
@@ -130,10 +140,10 @@ class ConversationController {
     private $scope: ng.IScope;
 
     // Own services
-    private webClientService: threema.WebClientService;
-    private receiverService: threema.ReceiverService;
-    private stateService: threema.StateService;
-    private mimeService: threema.MimeService;
+    private webClientService: WebClientService;
+    private receiverService: ReceiverService;
+    private stateService: StateService;
+    private mimeService: MimeService;
 
     // Third party services
     private $mdDialog: ng.material.IDialogService;
@@ -181,10 +191,10 @@ class ConversationController {
                 $mdToast: ng.material.IToastService,
                 $location,
                 $translate: ng.translate.ITranslateService,
-                webClientService: threema.WebClientService,
-                stateService: threema.StateService,
-                receiverService: threema.ReceiverService,
-                mimeService: threema.MimeService) {
+                webClientService: WebClientService,
+                stateService: StateService,
+                receiverService: ReceiverService,
+                mimeService: MimeService) {
         this.$stateParams = $stateParams;
         this.$timeout = $timeout;
         this.$log = $log;
@@ -557,10 +567,10 @@ class NavigationController {
 
     public name = 'navigation';
 
-    private webClientService: threema.WebClientService;
-    private receiverService: threema.ReceiverService;
-    private stateService: threema.StateService;
-    private trustedKeyStoreService: threema.TrustedKeyStoreService;
+    private webClientService: WebClientService;
+    private receiverService: ReceiverService;
+    private stateService: StateService;
+    private trustedKeyStoreService: TrustedKeyStoreService;
 
     private activeTab: 'contacts' | 'conversations' = 'conversations';
     private searchVisible = false;
@@ -577,9 +587,9 @@ class NavigationController {
 
     constructor($log: ng.ILogService, $state: ng.ui.IStateService,
                 $mdDialog: ng.material.IDialogService, $translate: ng.translate.ITranslateService,
-                webClientService: threema.WebClientService, stateService: threema.StateService,
-                receiverService: threema.ReceiverService,
-                trustedKeyStoreService: threema.TrustedKeyStoreService) {
+                webClientService: WebClientService, stateService: StateService,
+                receiverService: ReceiverService,
+                trustedKeyStoreService: TrustedKeyStoreService) {
 
         // Redirect to welcome if necessary
         if (stateService.state === 'error') {
@@ -763,9 +773,9 @@ class NavigationController {
 
 class MessengerController {
     public name = 'messenger';
-    private receiverService: threema.ReceiverService;
+    private receiverService: ReceiverService;
     private $state;
-    private webClientService: threema.WebClientService;
+    private webClientService: WebClientService;
 
     public static $inject = [
         '$scope', '$state', '$log', '$mdDialog', '$translate',
@@ -773,8 +783,8 @@ class MessengerController {
     ];
     constructor($scope, $state, $log: ng.ILogService, $mdDialog: ng.material.IDialogService,
                 $translate: ng.translate.ITranslateService,
-                stateService: threema.StateService, receiverService: threema.ReceiverService,
-                webClientService: threema.WebClientService, controllerService: threema.ControllerService) {
+                stateService: StateService, receiverService: ReceiverService,
+                webClientService: WebClientService, controllerService: ControllerService) {
         // Redirect to welcome if necessary
         if (stateService.state === 'error') {
             $log.debug('MessengerController: WebClient not yet running, redirecting to welcome screen');
@@ -839,8 +849,8 @@ class ReceiverDetailController {
     public receiver: threema.Receiver;
     public title: string;
     public fingerPrint?: string;
-    private fingerPrintService: threema.FingerPrintService;
-    private contactService: threema.ContactService;
+    private fingerPrintService: FingerPrintService;
+    private contactService: ContactService;
     private showGroups = false;
     private showDistributionLists = false;
     private inGroups: threema.GroupReceiver[] = [];
@@ -855,8 +865,8 @@ class ReceiverDetailController {
         'WebClientService', 'FingerPrintService', 'ContactService', 'ControllerModelService',
     ];
     constructor($log: ng.ILogService, $stateParams, $state: ng.ui.IStateService, $mdDialog: ng.material.IDialogService,
-                webClientService: threema.WebClientService, fingerPrintService: threema.FingerPrintService,
-                contactService: threema.ContactService, controllerModelService: threema.ControllerModelService) {
+                webClientService: WebClientService, fingerPrintService: FingerPrintService,
+                contactService: ContactService, controllerModelService: ControllerModelService) {
 
         this.$mdDialog = $mdDialog;
         this.$state = $state;
@@ -963,7 +973,7 @@ class ReceiverEditController {
     ];
     constructor($log: ng.ILogService, $stateParams, $state: ng.ui.IStateService,
                 $mdDialog, $timeout: ng.ITimeoutService, $translate: ng.translate.ITranslateService,
-                webClientService: threema.WebClientService, controllerModelService: threema.ControllerModelService) {
+                webClientService: WebClientService, controllerModelService: ControllerModelService) {
 
         this.$mdDialog = $mdDialog;
         this.$state = $state;
@@ -1053,7 +1063,7 @@ class ReceiverCreateController {
 
     constructor($stateParams: threema.CreateReceiverStateParams, $mdDialog, $mdToast, $translate,
                 $timeout: ng.ITimeoutService, $state: ng.ui.IStateService, $log: ng.ILogService,
-                controllerModelService: threema.ControllerModelService) {
+                controllerModelService: ControllerModelService) {
         this.$mdDialog = $mdDialog;
         this.$timeout = $timeout;
         this.$state = $state;

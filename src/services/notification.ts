@@ -16,7 +16,7 @@
  */
 
 import Receiver = threema.Receiver;
-export class NotificationService implements threema.NotificationService {
+export class NotificationService {
 
     private logTag: string = '[NotificationService]';
 
